@@ -16,6 +16,7 @@ func (c *Card) PlayCard() cardgame.Card {
 	return c
 }
 
-func (c *Card) ShowCard() {
+func (c *Card) ShowCard() cardgame.Card {
 	fmt.Println(c)
+	return c
 }

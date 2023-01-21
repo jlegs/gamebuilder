@@ -17,14 +17,15 @@ type CardGame interface {
 
 type Player struct {
 	Name string
-	Hand Hand
+	Hand hand
 }
 
 type Game struct {
-	Deck     deck
-	Players  []Player
-	Dealer   Player
-	Rulebook Rulebook
+	Deck
+	Players  []*Player
+	Dealer   *Player
+	Rulebook *Rulebook
+	// Board Board
 }
 
 type Rulebook struct {
@@ -46,13 +47,14 @@ type Hand interface {
 }
 
 type hand struct {
-	Cards []card
+	Cards []Card
 }
 
-func (h *hand) ShowHand() {
+func (h *hand) ShowHand() []Card {
 	fmt.Println(h.Cards)
+	return h.Cards
 }
 
-func (h *hand) AddCard(c card) {
+func (h *hand) AddCard(c Card) {
 	h.Cards = append(h.Cards, c)
 }

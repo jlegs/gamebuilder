@@ -2,7 +2,6 @@ package blackjack
 
 import (
 	"bufio"
-	"fmt"
 	"gamebuilder/internal/cardgame"
 	"io"
 )
@@ -11,39 +10,40 @@ type HasBJ cardgame.Rule
 
 func (bj HasBJ) Condition(game cardgame.Game) bool {
 
-	game.Players[0].Hand.ShowHand()
+	// game.Players[0].Hand.ShowHand()
 	return false
 }
 
 type BJRulebook cardgame.Rulebook
 
 type BlackJackGame struct {
-	Game cardgame.Game
+	cardgame.Game
 	// Rulebook cardgame.Rulebook
 	// Players  []cardgame.Player
 	// Dealer   cardgame.Player
 }
 
-func (bj *BlackJackGame) Initialize(players []cardgame.Player) {
+func (bj *BlackJackGame) Initialize(players []*cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
 		Rules: []cardgame.RuleCondition{HasBJ{}},
 	}
-	bj.Game.Rulebook = rb
+	bj.Rulebook = &rb
 
-	d := cardgame.NewDeck(2)
-	bj.Game.Deck = d
+	d := cardgame.NewDeck(1)
+	bj.Deck = d
 
-	bj.Game.Players = players
+	bj.Players = players
 
-	bj.Game.Dealer = cardgame.Player{Name: "Dealer"}
+	bj.Dealer = &cardgame.Player{Name: "Dealer"}
 
 }
 
 func (bj *BlackJackGame) Deal() {
-	c := Card{Value: "K", Suit: "h"}
-	for _, player := range bj.Game.Players {
-		player.Hand.AddCard(&c)
+	// c := Card{Value: "K", Suit: "h"}
+	for _, player := range bj.Players {
+		c := bj.Deck.DealCard()
+		player.Hand.AddCard(c)
 	}
 }
 
@@ -51,7 +51,12 @@ func (bj *BlackJackGame) Play() {
 
 }
 
-func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) {
+func (bj *BlackJackGame) ReceiveBets() {
+	// should this be a channel?
+	// would allow us to async receive bets ....
+}
+
+func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 
 	buf := bufio.NewScanner(stdin)
 	for {
@@ -60,10 +65,10 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) {
 		if t == "q" {
 			break
 		} else {
-			fmt.Println("enter something")
+			return t
 		}
 	}
-
+	return ""
 }
 
 func (bj *BlackJackGame) EvaluateConditions() {
