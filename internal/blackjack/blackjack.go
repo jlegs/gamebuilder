@@ -2,6 +2,7 @@ package blackjack
 
 import (
 	"bufio"
+	"fmt"
 	"gamebuilder/internal/cardgame"
 	"io"
 )
@@ -10,29 +11,36 @@ type HasBJ cardgame.Rule
 
 func (bj HasBJ) Condition(game cardgame.Game) bool {
 
-	// game.Players[0].Hand.ShowHand()
-	return false
+	// game.Players[0].Hand.CalculateBJ()
+	return true
 }
 
 type BJRulebook cardgame.Rulebook
 
 type BlackJackGame struct {
+	Deck cardgame.Deck
 	cardgame.Game
-	// Rulebook cardgame.Rulebook
-	// Players  []cardgame.Player
-	// Dealer   cardgame.Player
+	MinBet  int
+	MaxBet  int
+	Players []*BJPlayer
+	// Deck BJDeck
+	// SideGame cardgame.Game
 }
 
-func (bj *BlackJackGame) Initialize(players []*cardgame.Player) {
+func (bj *BlackJackGame) Initialize(players []*BJPlayer) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		Rules: []cardgame.RuleCondition{HasBJ{}},
+		Rules: []cardgame.RuleConditioner{HasBJ{}},
 	}
 	bj.Rulebook = &rb
 
-	d := cardgame.NewDeck(1)
-	bj.Deck = d
+	d := NewDeck(1)
+	bj.GameDeck = d
 
+	// for _, player := range players {
+	// h := Hand{}
+	// player.Hand = &h
+	// }
 	bj.Players = players
 
 	bj.Dealer = &cardgame.Player{Name: "Dealer"}
@@ -42,12 +50,17 @@ func (bj *BlackJackGame) Initialize(players []*cardgame.Player) {
 func (bj *BlackJackGame) Deal() {
 	// c := Card{Value: "K", Suit: "h"}
 	for _, player := range bj.Players {
-		c := bj.Deck.DealCard()
+		c := bj.Game.GameDeck.DealCard()
 		player.Hand.AddCard(c)
 	}
 }
 
 func (bj *BlackJackGame) Play() {
+	for _, rule := range bj.Rulebook.Rules {
+		if rule.Condition(bj.Game) {
+			fmt.Println("IDK")
+		}
+	}
 
 }
 
@@ -78,3 +91,16 @@ func (bj *BlackJackGame) EvaluateConditions() {
 func (bj *BlackJackGame) ApplyRules() {
 
 }
+
+type BJPlayer struct {
+	cardgame.Player
+	Hand
+	Name     string
+	BankRoll int
+}
+
+// type BJHand struct {
+// 	// cardgame.Hand
+// 	// Cards []*cardgame.Card
+// 	Hand
+// }

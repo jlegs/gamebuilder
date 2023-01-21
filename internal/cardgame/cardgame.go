@@ -1,13 +1,12 @@
 package cardgame
 
 import (
-	"fmt"
 	"io"
 )
 
 type CardGame interface {
 	Play()
-	// Initialize()
+	Initialize()
 	// ShowResults()
 	GetPlayerInput(*io.Reader)
 	EvaluateConditions()
@@ -17,11 +16,12 @@ type CardGame interface {
 
 type Player struct {
 	Name string
-	Hand hand
+	Hand
+	BankRoll int
 }
 
 type Game struct {
-	Deck
+	GameDeck Deck
 	Players  []*Player
 	Dealer   *Player
 	Rulebook *Rulebook
@@ -29,32 +29,32 @@ type Game struct {
 }
 
 type Rulebook struct {
-	Rules []RuleCondition
+	Rules []RuleConditioner
 }
 
 type Rule struct {
 }
 
-type RuleCondition interface {
+type RuleConditioner interface {
 	Condition(Game) bool
 }
 
 type Hand interface {
 	ShowHand()
-	AddCard(Card)
+	AddCard(*Card)
 	GiveCard(*Card) *Card
-	RemoveCard(*Card)
+	RemoveCard(*Card) *Card
 }
 
-type hand struct {
-	Cards []Card
-}
+// type hand struct {
+// 	Cards []Card
+// }
 
-func (h *hand) ShowHand() []Card {
-	fmt.Println(h.Cards)
-	return h.Cards
-}
+// func (h *hand) ShowHand() []Card {
+// 	fmt.Println(h.Cards)
+// 	return h.Cards
+// }
 
-func (h *hand) AddCard(c Card) {
-	h.Cards = append(h.Cards, c)
-}
+// func (h *hand) AddCard(c Card) {
+// 	h.Cards = append(h.Cards, c)
+// }

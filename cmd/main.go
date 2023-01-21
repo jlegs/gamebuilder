@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"gamebuilder/internal/blackjack"
-	"gamebuilder/internal/cardgame"
 )
 
 func main() {
@@ -13,11 +12,13 @@ func main() {
 	game := blackjack.BlackJackGame{}
 	// game.GetPlayerInput(os.Stdin)
 	// game.Play()
-	game.Initialize([]*cardgame.Player{&cardgame.Player{Name: "Josh"}})
+	game.Initialize([]*blackjack.BJPlayer{&blackjack.BJPlayer{Name: "Josh"}})
 	// fmt.Println("Game is: ", game)
-	game.Play()
-	fmt.Println(game.Deck)
 	game.Deal()
+	game.Play()
+	fmt.Println(game.GameDeck)
 	// fmt.Println(game.Deck.Cards)
-	fmt.Println("PLAYERS CARDS ARE: ", game.Players[0].Hand.ShowHand())
+	fmt.Println("PLAYERS CARDS ARE: ")
+	game.Players[0].Hand.ShowHand()
+	fmt.Println(game.Players[0].Hand.CalculateBJP())
 }

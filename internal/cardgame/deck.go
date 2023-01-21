@@ -21,7 +21,7 @@ type Deck interface {
 
 type deck struct {
 	Cards []*Card
-	Deck
+	// Deck
 }
 
 func (d *deck) AddCard(c Card) {
