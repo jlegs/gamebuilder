@@ -9,35 +9,43 @@ import (
 
 type HasBJ cardgame.Rule
 
-func (*HasBJ) Condition(game cardgame.CardGame) {
-	// game.Players[0].Hand.ShowHand()
+func (bj HasBJ) Condition(game cardgame.Game) bool {
+
+	game.Players[0].Hand.ShowHand()
+	return false
 }
 
 type BJRulebook cardgame.Rulebook
 
 type BlackJackGame struct {
-	// cardgame.CardGame
-	Rulebook cardgame.Rulebook
-	Players  []cardgame.Player
-	Dealer   cardgame.Player
+	Game cardgame.Game
+	// Rulebook cardgame.Rulebook
+	// Players  []cardgame.Player
+	// Dealer   cardgame.Player
 }
 
-type BJRules struct {
-	Rules []cardgame.Rule
-}
-
-func (bj *BlackJackGame) Initialize() {
+func (bj *BlackJackGame) Initialize(players []cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		Rules: []*cardgame.Rule{},
+		Rules: []cardgame.RuleCondition{HasBJ{}},
 	}
-	bj.Rulebook = rb
+	bj.Game.Rulebook = rb
+
+	d := cardgame.NewDeck(2)
+	bj.Game.Deck = d
+
+	bj.Game.Players = players
+
+	bj.Game.Dealer = cardgame.Player{Name: "Dealer"}
 
 }
 
-// {
-// 	Rules: []Rule{HasBJ},
-// }
+func (bj *BlackJackGame) Deal() {
+	c := Card{Value: "K", Suit: "h"}
+	for _, player := range bj.Game.Players {
+		player.Hand.AddCard(&c)
+	}
+}
 
 func (bj *BlackJackGame) Play() {
 

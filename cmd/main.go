@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gamebuilder/internal/blackjack"
+	"gamebuilder/internal/cardgame"
 	"os"
 )
 
@@ -13,4 +14,7 @@ func main() {
 	game := blackjack.BlackJackGame{}
 	game.GetPlayerInput(os.Stdin)
 	fmt.Println("Game is: ", game)
+	// game.Play()
+	game.Initialize([]cardgame.Player{cardgame.Player{Name: "Josh"}})
+	fmt.Println(game.Game.Deck.Cards)
 }

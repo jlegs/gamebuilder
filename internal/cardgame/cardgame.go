@@ -1,14 +1,18 @@
 package cardgame
 
-import "io"
+import (
+	"fmt"
+	"io"
+)
 
 type CardGame interface {
 	Play()
-	Initialize()
-	ShowResults()
+	// Initialize()
+	// ShowResults()
 	GetPlayerInput(*io.Reader)
 	EvaluateConditions()
 	ApplyRules()
+	Deal()
 }
 
 type Player struct {
@@ -24,13 +28,31 @@ type Game struct {
 }
 
 type Rulebook struct {
-	Rules []*Rule
+	Rules []RuleCondition
 }
 
 type Rule struct {
-	RuleCondition
 }
 
 type RuleCondition interface {
-	Condition(CardGame)
+	Condition(Game) bool
+}
+
+type Hand interface {
+	ShowHand()
+	AddCard(Card)
+	GiveCard(*Card) *Card
+	RemoveCard(*Card)
+}
+
+type hand struct {
+	Cards []card
+}
+
+func (h *hand) ShowHand() {
+	fmt.Println(h.Cards)
+}
+
+func (h *hand) AddCard(c card) {
+	h.Cards = append(h.Cards, c)
 }
