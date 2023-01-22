@@ -21,6 +21,6 @@ func main() {
 	fmt.Println(game.Deck)
 	// fmt.Println(game.Deck.Cards)
 	fmt.Println("PLAYERS CARDS ARE: ")
-	game.Player.Hand.ShowHand()
-	fmt.Println(game.Player.Hand.CalculateBJ())
+	game.Players[0].Hand.ShowHand()
+	fmt.Println(game.Players[0].Hand.CalculateBJ())
 }

@@ -9,10 +9,11 @@ import (
 type BlackJackGame struct {
 	// Deck cardgame.Deck
 	cardgame.CardGame
+	Game     cardgame.Game
 	Rulebook *cardgame.Rulebook
 	MinBet   int
 	MaxBet   int
-	Player   BJPlayer
+	Players  []*BJPlayer
 	Dealer   *BJPlayer
 	Deck     cardgame.Deck
 	// SideGame cardgame.Game
@@ -34,7 +35,7 @@ func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	bjplayer.Hand = newHand
 	// }
 
-	bj.Player = bjplayer
+	bj.Players = append(bj.Players, &bjplayer)
 
 	bj.Dealer = &BJPlayer{Name: "Dealer"}
 
@@ -42,15 +43,12 @@ func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 
 func (bj *BlackJackGame) Deal() {
 	// c := Card{Value: "K", Suit: "h"}
-	// allPlayers := []BJPlayer{}
+	allPlayers := append(bj.Players, bj.Dealer)
 	for i := 0; i < 2; i++ {
-		// for _, player := range bj.Players {
-		c := bj.Deck.DealCard()
-		// fmt.Println(player)
-		// fmt.Println(c)
-
-		bj.Player.Hand.AddCard(&c)
-		// }
+		for _, player := range allPlayers {
+			c := bj.Deck.DealCard()
+			player.Hand.AddCard(&c)
+		}
 	}
 }
 
@@ -82,8 +80,8 @@ func (bj *BlackJackGame) EvaluateConditions() string {
 	for _, rule := range bj.Rulebook.Rules {
 		switch t := rule.(type) {
 		case HasBJ:
-			if t.Condition(bj) {
-				return "IDK -- HasBJ was the rule condition that was gotten."
+			if t.Condition(*bj) {
+				return "PLAYER WON BECAUSE THEY HAD BLACKJACK"
 			}
 		default:
 			return "IDK"

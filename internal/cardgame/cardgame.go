@@ -8,7 +8,6 @@ type CardGame interface {
 	EvaluateConditions() string
 	ApplyRules()
 	Deal()
-	Player
 }
 
 type Player interface {
@@ -18,7 +17,7 @@ type Player interface {
 	// GetName() string
 }
 
-type player struct {
+type Playerst struct {
 	Name     string
 	Hand     Hand
 	BankRoll int
@@ -26,8 +25,8 @@ type player struct {
 
 type Game struct {
 	GameDeck Deck
-	Players  []*Player
-	Dealer   Player
+	Player   Playerst
+	Dealer   Playerst
 	Rulebook *Rulebook
 	// Board Board
 }
@@ -41,5 +40,5 @@ type Rule struct {
 }
 
 type RuleConditioner interface {
-	Condition(CardGame) bool
+	Condition(game interface{}) bool
 }
