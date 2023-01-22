@@ -2,16 +2,20 @@ package cardgame
 
 type CardGame interface {
 	Play()
-	Initialize()
+	Initialize(Player)
 	// ShowResults()
 	// GetPlayerInput(*io.Reader)
-	EvaluateConditions()
+	EvaluateConditions() string
 	ApplyRules()
 	Deal()
+	Player
 }
 
 type Player interface {
 	GetName() string
+	GetBankRoll() int
+	// Hand
+	// GetName() string
 }
 
 type player struct {

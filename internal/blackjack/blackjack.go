@@ -12,13 +12,13 @@ type BlackJackGame struct {
 	Rulebook *cardgame.Rulebook
 	MinBet   int
 	MaxBet   int
-	Players  []*BJPlayer
+	Player   BJPlayer
 	Dealer   *BJPlayer
 	Deck     cardgame.Deck
 	// SideGame cardgame.Game
 }
 
-func (bj *BlackJackGame) Initialize(players []*BJPlayer) {
+func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
 		Rules: []cardgame.RuleConditioner{HasBJ{}},
@@ -28,12 +28,13 @@ func (bj *BlackJackGame) Initialize(players []*BJPlayer) {
 	d := NewDeck(1)
 	bj.Deck = d
 
-	for _, player := range players {
-		newHand := BJHand{}
-		player.Hand = newHand
-	}
+	// for _, player := range players {
+	bjplayer := BJPlayer{Name: player.GetName(), BankRoll: player.GetBankRoll()}
+	newHand := BJHand{}
+	bjplayer.Hand = newHand
+	// }
 
-	bj.Players = players
+	bj.Player = bjplayer
 
 	bj.Dealer = &BJPlayer{Name: "Dealer"}
 
@@ -43,13 +44,13 @@ func (bj *BlackJackGame) Deal() {
 	// c := Card{Value: "K", Suit: "h"}
 	// allPlayers := []BJPlayer{}
 	for i := 0; i < 2; i++ {
-		for _, player := range bj.Players {
-			c := bj.Deck.DealCard()
-			// fmt.Println(player)
-			// fmt.Println(c)
+		// for _, player := range bj.Players {
+		c := bj.Deck.DealCard()
+		// fmt.Println(player)
+		// fmt.Println(c)
 
-			player.Hand.AddCard(&c)
-		}
+		bj.Player.Hand.AddCard(&c)
+		// }
 	}
 }
 
@@ -81,7 +82,7 @@ func (bj *BlackJackGame) EvaluateConditions() string {
 	for _, rule := range bj.Rulebook.Rules {
 		switch t := rule.(type) {
 		case HasBJ:
-			if t.Condition(bj.CardGame) {
+			if t.Condition(bj) {
 				return "IDK -- HasBJ was the rule condition that was gotten."
 			}
 		default:
@@ -104,4 +105,8 @@ type BJPlayer struct {
 
 func (p *BJPlayer) GetName() string {
 	return p.Name
+}
+
+func (p *BJPlayer) GetBankRoll() int {
+	return p.BankRoll
 }

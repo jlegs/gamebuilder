@@ -12,7 +12,7 @@ func main() {
 	game := blackjack.BlackJackGame{}
 	// game.GetPlayerInput(os.Stdin)
 	// game.Play()
-	game.Initialize([]*blackjack.BJPlayer{&blackjack.BJPlayer{Name: "Josh"}})
+	game.Initialize(&blackjack.BJPlayer{Name: "Josh"})
 	// fmt.Println("Game is: ", game)
 	game.Deck.Shuffle()
 	game.Deal()
@@ -21,6 +21,6 @@ func main() {
 	fmt.Println(game.Deck)
 	// fmt.Println(game.Deck.Cards)
 	fmt.Println("PLAYERS CARDS ARE: ")
-	game.Players[0].Hand.ShowHand()
-	fmt.Println(game.Players[0].Hand.CalculateBJ())
+	game.Player.Hand.ShowHand()
+	fmt.Println(game.Player.Hand.CalculateBJ())
 }
