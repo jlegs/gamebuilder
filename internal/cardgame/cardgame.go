@@ -1,29 +1,29 @@
 package cardgame
 
-import (
-	"io"
-)
-
 type CardGame interface {
 	Play()
 	Initialize()
 	// ShowResults()
-	GetPlayerInput(*io.Reader)
+	// GetPlayerInput(*io.Reader)
 	EvaluateConditions()
 	ApplyRules()
 	Deal()
 }
 
-type Player struct {
-	Name string
-	Hand
+type Player interface {
+	GetName() string
+}
+
+type player struct {
+	Name     string
+	Hand     Hand
 	BankRoll int
 }
 
 type Game struct {
 	GameDeck Deck
 	Players  []*Player
-	Dealer   *Player
+	Dealer   Player
 	Rulebook *Rulebook
 	// Board Board
 }
@@ -33,28 +33,9 @@ type Rulebook struct {
 }
 
 type Rule struct {
+	RuleConditioner
 }
 
 type RuleConditioner interface {
-	Condition(Game) bool
+	Condition(CardGame) bool
 }
-
-type Hand interface {
-	ShowHand()
-	AddCard(*Card)
-	GiveCard(*Card) *Card
-	RemoveCard(*Card) *Card
-}
-
-// type hand struct {
-// 	Cards []Card
-// }
-
-// func (h *hand) ShowHand() []Card {
-// 	fmt.Println(h.Cards)
-// 	return h.Cards
-// }
-
-// func (h *hand) AddCard(c Card) {
-// 	h.Cards = append(h.Cards, c)
-// }

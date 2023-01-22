@@ -2,28 +2,19 @@ package blackjack
 
 import (
 	"bufio"
-	"fmt"
 	"gamebuilder/internal/cardgame"
 	"io"
 )
 
-type HasBJ cardgame.Rule
-
-func (bj HasBJ) Condition(game cardgame.Game) bool {
-
-	// game.Players[0].Hand.CalculateBJ()
-	return true
-}
-
-type BJRulebook cardgame.Rulebook
-
 type BlackJackGame struct {
-	Deck cardgame.Deck
-	cardgame.Game
-	MinBet  int
-	MaxBet  int
-	Players []*BJPlayer
-	// Deck BJDeck
+	// Deck cardgame.Deck
+	cardgame.CardGame
+	Rulebook *cardgame.Rulebook
+	MinBet   int
+	MaxBet   int
+	Players  []*BJPlayer
+	Dealer   *BJPlayer
+	Deck     cardgame.Deck
 	// SideGame cardgame.Game
 }
 
@@ -35,32 +26,34 @@ func (bj *BlackJackGame) Initialize(players []*BJPlayer) {
 	bj.Rulebook = &rb
 
 	d := NewDeck(1)
-	bj.GameDeck = d
+	bj.Deck = d
 
-	// for _, player := range players {
-	// h := Hand{}
-	// player.Hand = &h
-	// }
+	for _, player := range players {
+		newHand := BJHand{}
+		player.Hand = newHand
+	}
+
 	bj.Players = players
 
-	bj.Dealer = &cardgame.Player{Name: "Dealer"}
+	bj.Dealer = &BJPlayer{Name: "Dealer"}
 
 }
 
 func (bj *BlackJackGame) Deal() {
 	// c := Card{Value: "K", Suit: "h"}
-	for _, player := range bj.Players {
-		c := bj.Game.GameDeck.DealCard()
-		player.Hand.AddCard(c)
+	// allPlayers := []BJPlayer{}
+	for i := 0; i < 2; i++ {
+		for _, player := range bj.Players {
+			c := bj.Deck.DealCard()
+			// fmt.Println(player)
+			// fmt.Println(c)
+
+			player.Hand.AddCard(&c)
+		}
 	}
 }
 
 func (bj *BlackJackGame) Play() {
-	for _, rule := range bj.Rulebook.Rules {
-		if rule.Condition(bj.Game) {
-			fmt.Println("IDK")
-		}
-	}
 
 }
 
@@ -84,8 +77,18 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 	return ""
 }
 
-func (bj *BlackJackGame) EvaluateConditions() {
-
+func (bj *BlackJackGame) EvaluateConditions() string {
+	for _, rule := range bj.Rulebook.Rules {
+		switch t := rule.(type) {
+		case HasBJ:
+			if t.Condition(bj.CardGame) {
+				return "IDK -- HasBJ was the rule condition that was gotten."
+			}
+		default:
+			return "IDK"
+		}
+	}
+	return "IDK"
 }
 
 func (bj *BlackJackGame) ApplyRules() {
@@ -93,14 +96,12 @@ func (bj *BlackJackGame) ApplyRules() {
 }
 
 type BJPlayer struct {
-	cardgame.Player
-	Hand
+	// cardgame.Player
+	Hand     BJHand
 	Name     string
 	BankRoll int
 }
 
-// type BJHand struct {
-// 	// cardgame.Hand
-// 	// Cards []*cardgame.Card
-// 	Hand
-// }
+func (p *BJPlayer) GetName() string {
+	return p.Name
+}

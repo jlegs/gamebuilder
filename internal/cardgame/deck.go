@@ -5,18 +5,25 @@ import "fmt"
 type Card interface {
 	ShowCard() Card
 	PlayCard() Card
+	Val() string
 	// TradeCard(*Card)
 }
 
 type Deck interface {
 	Shuffle()
 	DealCard() Card
-	RemoveCard(*Card)
+	RemoveCard(Card)
 	// Order()
-	// ShowCards()
-	// ShowHand()
+	ShowCards()
 	// ShowDisardPile()
 	AddCard(Card)
+}
+
+type Hand interface {
+	ShowHand()
+	AddCard(*Card)
+	GiveCard(*Card) *Card
+	RemoveCard(*Card) *Card
 }
 
 type deck struct {
@@ -53,6 +60,23 @@ func (c *card) PlayCard() Card {
 func (c *card) ShowCard() Card {
 	fmt.Println(c)
 	return c
+}
+
+func (c *card) Val() string {
+	return c.Value
+}
+
+type hand struct {
+	Cards []Card
+}
+
+func (h *hand) ShowHand() []Card {
+	fmt.Println(h.Cards)
+	return h.Cards
+}
+
+func (h *hand) AddCard(c Card) {
+	h.Cards = append(h.Cards, c)
 }
 
 // NewDeck takes an int as an arg, and that is the number of decks to shuffle together into this new deck.
