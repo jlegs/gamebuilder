@@ -61,10 +61,10 @@ func (d *deck) Shuffle() {
 	// fmt.Println("Cards BEFORE are: ")
 	// d.ShowCards()
 	for i := 0; i < 10; i++ {
-		for _, _ = range d.Cards {
+		for i := 0; i < len(d.Cards); i++ {
 			index := rand.Intn(len(d.Cards))
 			card := d.Cards[index]
-			d.RemoveCard(card)
+			d.Cards = append(d.Cards[:index], d.Cards[index+1:]...)
 			d.Cards = append(d.Cards, card)
 		}
 	}

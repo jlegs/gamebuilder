@@ -2,8 +2,10 @@ package blackjack
 
 import (
 	"bufio"
+	"fmt"
 	"gamebuilder/internal/cardgame"
 	"io"
+	"os"
 )
 
 type BlackJackGame struct {
@@ -22,7 +24,7 @@ type BlackJackGame struct {
 func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		Rules: []cardgame.RuleConditioner{HasBJ{}},
+		Rules: []cardgame.RuleConditioner{HasBJ{}, Busted{}},
 	}
 	bj.Rulebook = &rb
 
@@ -53,7 +55,38 @@ func (bj *BlackJackGame) Deal() {
 }
 
 func (bj *BlackJackGame) Play() {
+	bj.Deck.Shuffle()
+	bj.Deal()
+	fmt.Println("YOU have: ")
+	bj.Players[0].Hand.ShowHand()
+	fmt.Println("Dealer has: ", bj.Dealer.Hand.Cards[0])
+	for {
+		if bj.Players[0].Hand.CalculateBJ() < 22 {
+			bj.Players[0].Hand.ShowHand()
+			fmt.Println("Enter 'h' to hit, or anything else to stay: \n>")
+			input := bj.GetPlayerInput(os.Stdin)
+			if input == "h" {
+				card := bj.Deck.DealCard()
+				bj.Players[0].Hand.AddCard(&card)
+			} else {
+				break
+			}
+		} else {
+			break
+		}
+	}
 
+	for {
+		if bj.Dealer.Hand.CalculateBJ() <= 16 {
+			card := bj.Deck.DealCard()
+			bj.Dealer.Hand.AddCard(&card)
+		} else {
+			break
+		}
+	}
+
+	fmt.Println("Dealers cards were: ")
+	bj.Dealer.Hand.ShowHand()
 }
 
 func (bj *BlackJackGame) ReceiveBets() {
@@ -82,6 +115,10 @@ func (bj *BlackJackGame) EvaluateConditions() string {
 		case HasBJ:
 			if t.Condition(*bj) {
 				return "PLAYER WON BECAUSE THEY HAD BLACKJACK"
+			}
+		case Busted:
+			if t.Condition(*bj) {
+				return "PLAYER LOST BECAUSE THEY BUSTED"
 			}
 		default:
 			return "IDK"

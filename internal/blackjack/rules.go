@@ -14,4 +14,14 @@ func (bj HasBJ) Condition(game interface{}) bool {
 	return false
 }
 
+type Busted cardgame.Rule
+
+func (bj Busted) Condition(game interface{}) bool {
+	g, ok := game.(BlackJackGame)
+	if ok {
+		return g.Players[0].Hand.Busted()
+	}
+	return false
+}
+
 type BJRulebook cardgame.Rulebook
