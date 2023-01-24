@@ -17,7 +17,7 @@ func main() {
 	// game.Deck.Shuffle()
 	// game.Deal()
 	game.Play()
-	fmt.Println(game.EvaluateConditions())
+	fmt.Println(game.EvaluateWinRules())
 	// fmt.Println(game.Deck)
 	// fmt.Println(game.Deck.Cards)
 	fmt.Println("PLAYERS CARDS ARE: ")
