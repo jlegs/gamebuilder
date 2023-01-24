@@ -11,7 +11,7 @@ import (
 type BlackJackGame struct {
 	// Deck cardgame.Deck
 	cardgame.CardGame
-	Game     cardgame.Game
+	// Game     cardgame.Game
 	Rulebook *cardgame.Rulebook
 	MinBet   int
 	MaxBet   int
@@ -24,7 +24,7 @@ type BlackJackGame struct {
 func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		Rules: []cardgame.RuleConditioner{HasBJ{}, Busted{}},
+		WinRules: []cardgame.RuleConditioner{HasBJ{}, Busted{}},
 	}
 	bj.Rulebook = &rb
 
@@ -109,8 +109,20 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 	return ""
 }
 
-func (bj *BlackJackGame) EvaluateConditions() string {
-	for _, rule := range bj.Rulebook.Rules {
+func (bj *BlackJackGame) EvaluateWinRules() string {
+	switch t := bj.Players[0].Hand.Cards[0].(type) {
+	case *Card:
+		t.PlayRules = []cardgame.RuleConditioner{&Is10{}}
+		for _, rule := range t.PlayRules {
+			if rule.Condition(t) {
+				fmt.Println("CARD WAS A 10 CARD!!!")
+			} else {
+				fmt.Println("Card was not a 10 or logic is bad")
+			}
+		}
+	}
+
+	for _, rule := range bj.Rulebook.WinRules {
 		switch t := rule.(type) {
 		case HasBJ:
 			if t.Condition(*bj) {

@@ -8,9 +8,20 @@ import (
 
 type Card struct {
 	// cardgame.Card
-	Value string
-	Suit  string
-	Order int
+	Value     string
+	Suit      string
+	Order     int
+	PlayRules []cardgame.RuleConditioner
+}
+
+type Is10 cardgame.Rule
+
+func (*Is10) Condition(obj interface{}) bool {
+	switch t := obj.(type) {
+	case *Card:
+		return CardValues[t.Value] == 10
+	}
+	return false
 }
 
 func (c *Card) Val() string {
@@ -27,11 +38,6 @@ func (c *Card) ShowCard() cardgame.Card {
 	fmt.Println(c.Value, c.Suit)
 	return c
 }
-
-// func (c *Card) SetValues(value string, suit string) {
-// 	c.Value = value
-// 	c.Suit = suit
-// }
 
 // func (h *hand)
 type deck struct {

@@ -5,7 +5,7 @@ type CardGame interface {
 	Initialize(Player)
 	// ShowResults()
 	// GetPlayerInput(*io.Reader)
-	EvaluateConditions() string
+	EvaluateWinRules() string
 	ApplyRules()
 	Deal()
 }
@@ -32,7 +32,9 @@ type Game struct {
 }
 
 type Rulebook struct {
-	Rules []RuleConditioner
+	WinRules   []RuleConditioner
+	TurnRules  []RuleConditioner
+	SetupRules []RuleConditioner
 }
 
 type Rule struct {
