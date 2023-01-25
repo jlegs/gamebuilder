@@ -14,14 +14,19 @@ type Card struct {
 	PlayRules []cardgame.RuleConditioner
 }
 
-type Is10 cardgame.Rule
+type IsPlayable cardgame.Rule
 
-func (*Is10) Condition(obj interface{}) bool {
+func (*IsPlayable) Condition(obj interface{}) bool {
 	switch t := obj.(type) {
 	case *Card:
+		fmt.Println("BOOL VALUE WAS: ", CardValues[t.Value] == 10)
 		return CardValues[t.Value] == 10
 	}
 	return false
+}
+
+func (c *Card) Play() cardgame.Card {
+	return c
 }
 
 func (c *Card) Val() string {
@@ -110,6 +115,10 @@ func NewDeck(num int) *deck {
 	for _, suit := range suits {
 		for k, _ := range CardValues {
 			c := Card{Value: k, Suit: suit}
+			// if CardValues[c.Value] == 10 {
+			c.PlayRules = []cardgame.RuleConditioner{&IsPlayable{}}
+			// if we have to do this why not just add a method on this card deck called 'Is10()'?
+			// }
 			d.AddCard(&c)
 		}
 

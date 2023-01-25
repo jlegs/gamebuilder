@@ -68,11 +68,19 @@ func (bj *BlackJackGame) Play() {
 			if input == "h" {
 				card := bj.Deck.DealCard()
 				bj.Players[0].Hand.AddCard(&card)
+			} else if input == "j" {
+				card := bj.Players[0].Hand.Cards[0].(*Card)
+				for _, rule := range card.PlayRules {
+					r := rule.(*IsPlayable)
+					if r.Condition(card) {
+						card.Play()
+						fmt.Println("End of the *Is10 switch case inside Card type assertion\n==========")
+					}
+					// }
+				}
 			} else {
 				break
 			}
-		} else {
-			break
 		}
 	}
 
@@ -112,7 +120,7 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 func (bj *BlackJackGame) EvaluateWinRules() string {
 	switch t := bj.Players[0].Hand.Cards[0].(type) {
 	case *Card:
-		t.PlayRules = []cardgame.RuleConditioner{&Is10{}}
+
 		for _, rule := range t.PlayRules {
 			if rule.Condition(t) {
 				fmt.Println("CARD WAS A 10 CARD!!!")

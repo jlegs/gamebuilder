@@ -6,6 +6,7 @@ type Card interface {
 	ShowCard() Card
 	PlayCard() Card
 	Val() string
+	Play() Card
 	// TradeCard(*Card)
 }
 
@@ -64,6 +65,11 @@ func (c *card) ShowCard() Card {
 
 func (c *card) Val() string {
 	return c.Value
+}
+
+func (c *card) Play() Card {
+	fmt.Println("Play() unimplemented")
+	return c
 }
 
 type hand struct {
