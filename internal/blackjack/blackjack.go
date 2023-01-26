@@ -24,7 +24,7 @@ type BlackJackGame struct {
 func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		WinRules: []cardgame.RuleConditioner{HasBJ{}, Busted{}},
+		WinRules: []cardgame.RuleConditioner{HasBJ{}, Busted{}, Tie{}, PlayerStrongerHand{}},
 	}
 	bj.Rulebook = &rb
 
@@ -71,13 +71,13 @@ func (bj *BlackJackGame) Play() {
 			} else if input == "j" {
 				var playableCards []cardgame.Card
 				for _, c := range bj.Players[0].Hand.Cards {
-					card := c.(*Card)
+					card, _ := c.(*Card)
 					for _, rule := range card.PlayRules {
-						r := rule.(*IsPlayable)
-						if r.Condition(c) {
+						r, ok := rule.(*IsPlayable)
+						if ok && r.Condition(c) {
 							playableCards = append(playableCards, card)
 							// card.Play()
-							fmt.Println("End of the *Is10 switch case inside Card type assertion\n==========")
+							fmt.Println("End of the *Is10 switch case inside Card type assertion\n==========", &playableCards)
 						}
 
 					}
@@ -147,11 +147,19 @@ func (bj *BlackJackGame) EvaluateWinRules() string {
 			if t.Condition(*bj) {
 				return "PLAYER LOST BECAUSE THEY BUSTED"
 			}
+		case Tie:
+			if t.Condition(*bj) {
+				return "PLAYER TIED BC EVEN CARDS"
+			}
+		case PlayerStrongerHand:
+			if t.Condition(*bj) {
+				return "PLAYER WON! YAY!"
+			}
 		default:
-			return "IDK"
+			return "IDK 1"
 		}
 	}
-	return "IDK"
+	return "IDK 2"
 }
 
 func (bj *BlackJackGame) ApplyRules() {
