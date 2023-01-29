@@ -24,7 +24,7 @@ type BlackJackGame struct {
 func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
-		WinRules: []cardgame.RuleConditioner{HasBJ{}, Busted{}, Tie{}, PlayerStrongerHand{}},
+		WinRules: []cardgame.RuleCondition{HasBJ{}, Busted{}, Tie{}, PlayerStrongerHand{}},
 	}
 	bj.Rulebook = &rb
 
@@ -68,21 +68,18 @@ func (bj *BlackJackGame) Play() {
 			if input == "h" {
 				card := bj.Deck.DealCard()
 				bj.Players[0].Hand.AddCard(&card)
-			} else if input == "j" {
-				var playableCards []cardgame.Card
-				for _, c := range bj.Players[0].Hand.Cards {
-					card, _ := c.(*Card)
-					for _, rule := range card.PlayRules {
-						r, ok := rule.(*IsPlayable)
-						if ok && r.Condition(c) {
-							playableCards = append(playableCards, card)
-							// card.Play()
-							fmt.Println("End of the *Is10 switch case inside Card type assertion\n==========", &playableCards)
-						}
-
-					}
-					// }
-				}
+				// } else if input == "j" {
+				// 	for _, c := range bj.Players[0].Hand.Cards {
+				// 		var playableCards []cardgame.Card
+				// 		card, _ := c.(*Card)
+				// 		for _, rule := range card.PlayRules {
+				// 			if rule.Name() == "IsPlayable" && rule.Condition(c) {
+				// 				playableCards = append(playableCards, card)
+				// 				// card.Play()
+				// 				fmt.Println("End of the *Is10 switch case inside Card type assertion\n==========", &playableCards)
+				// 			}
+				// 		}
+				// 	}
 			} else {
 				break
 			}
@@ -125,38 +122,26 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 }
 
 func (bj *BlackJackGame) EvaluateWinRules() string {
-	switch t := bj.Players[0].Hand.Cards[0].(type) {
-	case *Card:
-
-		for _, rule := range t.PlayRules {
-			if rule.Condition(t) {
-				fmt.Println("CARD WAS A 10 CARD!!!")
-			} else {
-				fmt.Println("Card was not a 10 or logic is bad")
-			}
-		}
-	}
+	// for _, card := range bj.Players[0].Hand.Cards {
+	// 	switch t := card.(type) {
+	// 	case *Card:
+	// 		for _, rule := range t.PlayRules {
+	// 			if rule.Name() == "IsPlayable" && rule.Condition(&bj) {
+	// 				fmt.Println("CARD WAS A 10 CARD!!!")
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	for _, rule := range bj.Rulebook.WinRules {
-		switch t := rule.(type) {
-		case HasBJ:
-			if t.Condition(*bj) {
-				return "PLAYER WON BECAUSE THEY HAD BLACKJACK"
-			}
-		case Busted:
-			if t.Condition(*bj) {
-				return "PLAYER LOST BECAUSE THEY BUSTED"
-			}
-		case Tie:
-			if t.Condition(*bj) {
-				return "PLAYER TIED BC EVEN CARDS"
-			}
-		case PlayerStrongerHand:
-			if t.Condition(*bj) {
-				return "PLAYER WON! YAY!"
-			}
-		default:
-			return "IDK 1"
+		if rule.Name() == "HasBJ" && rule.Condition(*bj) {
+			return "PLAYER WON BCAUSE HAD BLACKJACK"
+		} else if rule.Name() == "Busted" && rule.Condition(*bj) {
+			return "PLAYER LOST BECAUSE THEY BUSTED"
+		} else if rule.Name() == "Tie" && rule.Condition(*bj) {
+			return "PLAYER TIED"
+		} else if rule.Name() == "PlayerStrongerHand" && rule.Condition(*bj) {
+			return "PLAYER Won because of a stronger hand, pure and simple."
 		}
 	}
 	return "IDK 2"

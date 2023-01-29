@@ -32,15 +32,16 @@ type Game struct {
 }
 
 type Rulebook struct {
-	WinRules   []RuleConditioner
-	TurnRules  []RuleConditioner
-	SetupRules []RuleConditioner
+	WinRules   []RuleCondition
+	TurnRules  []RuleCondition
+	SetupRules []RuleCondition
 }
 
 type Rule struct {
-	RuleConditioner
+	RuleCondition
 }
 
-type RuleConditioner interface {
+type RuleCondition interface {
 	Condition(game interface{}) bool
+	Name() string
 }

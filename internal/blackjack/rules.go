@@ -15,14 +15,22 @@ func (bj HasBJ) Condition(game interface{}) bool {
 	return false
 }
 
+func (bj HasBJ) Name() string {
+	return "HasBJ"
+}
+
 type Busted cardgame.Rule
 
-func (bj Busted) Condition(game interface{}) bool {
+func (r Busted) Condition(game interface{}) bool {
 	g, ok := game.(BlackJackGame)
 	if ok {
 		return g.Players[0].Hand.Busted()
 	}
 	return false
+}
+
+func (r Busted) Name() string {
+	return "Busted"
 }
 
 type Tie cardgame.Rule
@@ -39,6 +47,10 @@ func (bj Tie) Condition(game interface{}) bool {
 		}
 	}
 	return false
+}
+
+func (r Tie) Name() string {
+	return "Tie"
 }
 
 type PlayerStrongerHand cardgame.Rule
@@ -60,6 +72,10 @@ func (PlayerStrongerHand) Condition(game interface{}) bool {
 		return false
 	}
 	// return false
+}
+
+func (r PlayerStrongerHand) Name() string {
+	return "PlayerStrongerHand"
 }
 
 type BJRulebook cardgame.Rulebook

@@ -72,6 +72,10 @@ func (c *card) Play() Card {
 	return c
 }
 
+func (c *card) Name() string {
+	return c.Value
+}
+
 type hand struct {
 	Cards []Card
 }
