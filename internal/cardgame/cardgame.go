@@ -8,6 +8,8 @@ type CardGame interface {
 	EvaluateWinRules() string
 	ApplyRules()
 	Deal()
+	EndTurn()
+	StartTurn()
 }
 
 type Player interface {

@@ -21,7 +21,7 @@ type BlackJackGame struct {
 	// SideGame cardgame.Game
 }
 
-func (bj *BlackJackGame) Initialize(player cardgame.Player) {
+func (bj BlackJackGame) Initialize(player cardgame.Player) {
 	// var Rules = BJRules
 	rb := cardgame.Rulebook{
 		WinRules: []cardgame.RuleCondition{HasBJ{}, Busted{}, Tie{}, PlayerStrongerHand{}},
@@ -43,7 +43,7 @@ func (bj *BlackJackGame) Initialize(player cardgame.Player) {
 
 }
 
-func (bj *BlackJackGame) Deal() {
+func (bj BlackJackGame) Deal() {
 	// c := Card{Value: "K", Suit: "h"}
 	allPlayers := append(bj.Players, bj.Dealer)
 	for i := 0; i < 2; i++ {
@@ -54,7 +54,7 @@ func (bj *BlackJackGame) Deal() {
 	}
 }
 
-func (bj *BlackJackGame) Play() {
+func (bj BlackJackGame) Play() {
 	bj.Deck.Shuffle()
 	bj.Deal()
 	fmt.Println("YOU have: ")
@@ -101,12 +101,12 @@ func (bj *BlackJackGame) Play() {
 	bj.Dealer.Hand.ShowHand()
 }
 
-func (bj *BlackJackGame) ReceiveBets() {
+func (bj BlackJackGame) ReceiveBets() {
 	// should this be a channel?
 	// would allow us to async receive bets ....
 }
 
-func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
+func (bj BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 
 	buf := bufio.NewScanner(stdin)
 	for {
@@ -121,7 +121,7 @@ func (bj *BlackJackGame) GetPlayerInput(stdin io.Reader) string {
 	return ""
 }
 
-func (bj *BlackJackGame) EvaluateWinRules() string {
+func (bj BlackJackGame) EvaluateWinRules() string {
 	// for _, card := range bj.Players[0].Hand.Cards {
 	// 	switch t := card.(type) {
 	// 	case *Card:
@@ -134,20 +134,28 @@ func (bj *BlackJackGame) EvaluateWinRules() string {
 	// }
 
 	for _, rule := range bj.Rulebook.WinRules {
-		if rule.Name() == "HasBJ" && rule.Condition(*bj) {
+		if rule.Name() == "HasBJ" && rule.Condition(&bj) {
 			return "PLAYER WON BCAUSE HAD BLACKJACK"
-		} else if rule.Name() == "Busted" && rule.Condition(*bj) {
+		} else if rule.Name() == "Busted" && rule.Condition(&bj) {
 			return "PLAYER LOST BECAUSE THEY BUSTED"
-		} else if rule.Name() == "Tie" && rule.Condition(*bj) {
+		} else if rule.Name() == "Tie" && rule.Condition(&bj) {
 			return "PLAYER TIED"
-		} else if rule.Name() == "PlayerStrongerHand" && rule.Condition(*bj) {
+		} else if rule.Name() == "PlayerStrongerHand" && rule.Condition(&bj) {
 			return "PLAYER Won because of a stronger hand, pure and simple."
 		}
 	}
 	return "IDK 2"
 }
 
-func (bj *BlackJackGame) ApplyRules() {
+func (bj BlackJackGame) ApplyRules() {
+
+}
+
+func (bj BlackJackGame) StartTurn() {
+
+}
+
+func (bj BlackJackGame) EndTurn() {
 
 }
 

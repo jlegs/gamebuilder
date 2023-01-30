@@ -22,7 +22,7 @@ type Deck interface {
 
 type Hand interface {
 	ShowHand()
-	AddCard(*Card)
+	AddCard(Card)
 	GiveCard(*Card) *Card
 	RemoveCard(*Card) *Card
 }

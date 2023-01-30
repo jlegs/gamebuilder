@@ -6,15 +6,20 @@ import (
 )
 
 func main() {
-	deck := planetary.NewDeck(1)
-	fmt.Println("Instantiating Deck")
-	fmt.Println(deck)
 
-	card := deck.Cards[0]
-	card.Ability.Act(deck)
-	// switch ability := card.Ability.(type) {
-	// case planetary.DrawFour:
-	// 	fmt.Println("Case was DrawFour")
-	// 	ability.Act(deck)
-	// }
+	fmt.Println("Instantiating Game")
+	newHand := planetary.PlanetaryHand{}
+	player := planetary.PlanetaryPlayer{Hand: newHand}
+	g := planetary.PlanetaryGame{Players: []planetary.PlanetaryPlayer{player}}
+	deck := planetary.NewDeck(1)
+	g.PlanetaryDeck = deck
+	g.PlanetaryDeck.Shuffle()
+	milDeck := planetary.NewMilitaryDeck(1)
+	g.MilitaryDeck = milDeck
+	g.MilitaryDeck.Shuffle()
+
+	g.PlanetaryDeck.PlanetaryCards[0].Ability.Act(&g)
+
+	g.Players[0].Hand.AddCard(g.MilitaryDeck.DealCard())
+	g.Players[0].Hand.ShowHand()
 }
