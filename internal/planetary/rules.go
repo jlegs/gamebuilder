@@ -3,6 +3,7 @@ package planetary
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type DrawFour CardAbility
@@ -33,4 +34,27 @@ func (df DrawFour) Act(obj interface{}) {
 
 func (df DrawFour) Description() {
 	fmt.Println("Playing this card will allow you to draw four cards from the deck instantly.")
+}
+
+type StealCard CardAbility
+
+func (sc StealCard) Act(obj interface{}) {
+	fmt.Println("INSIDE stealCard.Act")
+	switch g := obj.(type) {
+	case *PlanetaryGame:
+		fmt.Println("Game was *planetaryGame")
+		fmt.Println(g)
+		// player := g.GetPlayerInput(os.Stdin)
+		// fmt.Println("You'd like to target player: ", player)
+		fmt.Println("Pick an index from 1 to ", len(g.Players[0].Hand.Cards)-1)
+		index, err := strconv.Atoi(g.GetPlayerInput(os.Stdin))
+		if err != nil {
+			fmt.Println("\n------\nUH OH AN ERROR OH")
+		}
+		card := g.Players[0].Hand.Cards[index]
+		fmt.Println("You picked: ", card)
+		g.Players[0].Hand.RemoveCard(index)
+		fmt.Println("Length of players cards is now: ", len(g.Players[0].Hand.Cards))
+
+	}
 }

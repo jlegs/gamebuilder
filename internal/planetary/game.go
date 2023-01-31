@@ -56,7 +56,7 @@ func (g *PlanetaryGame) GetPlayerInput(stdin io.Reader) string {
 			fmt.Println("YOU ARE TARGETING A PLAYER!!!!!!")
 			return t
 		} else {
-			fmt.Println("No Target Acquired. ")
+			return t
 		}
 	}
 	return ""

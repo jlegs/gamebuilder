@@ -24,7 +24,7 @@ type Hand interface {
 	ShowHand()
 	AddCard(Card)
 	GiveCard(*Card) *Card
-	RemoveCard(*Card) *Card
+	RemoveCard(int) *Card
 }
 
 type deck struct {

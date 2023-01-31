@@ -72,9 +72,12 @@ func (h *PlanetaryHand) GiveCard(c *cardgame.Card) *cardgame.Card {
 	return c
 }
 
-func (h PlanetaryHand) RemoveCard(c *cardgame.Card) *cardgame.Card {
+func (h *PlanetaryHand) RemoveCard(i int) *cardgame.Card {
 	// h.Cards = append(h.Cards, c)
-	return c
+	fmt.Println("INside Remove Card. Cards are: ", h.Cards)
+	c := h.Cards[i]
+	h.Cards = append(h.Cards[:i], h.Cards[i+1:]...)
+	return &c
 }
 
 // NewDeck takes an int as an arg, and that is the number of decks to shuffle together into this new deck.
@@ -103,7 +106,7 @@ func NewMilitaryDeck(num int) *MilitaryDeck {
 
 	for i := 0; i < 10; i++ {
 		c2 := MilitaryCard{
-			Ability: DrawFour{},
+			Ability: StealCard{},
 			ID:      strconv.Itoa(i + 11),
 		}
 		d.AddCard(c2)

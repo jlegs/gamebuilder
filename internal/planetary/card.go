@@ -67,7 +67,7 @@ func (c PlanetaryCard) PlayCard() cardgame.Card {
 }
 
 func (c PlanetaryCard) ShowCard() cardgame.Card {
-	fmt.Println(c.ID, c.Ability)
+	// fmt.Println(c.ID, c.Ability)
 	return &c
 }
 

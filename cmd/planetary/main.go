@@ -22,4 +22,11 @@ func main() {
 
 	g.Players[0].Hand.AddCard(g.MilitaryDeck.DealCard())
 	g.Players[0].Hand.ShowHand()
+	mc := g.Players[0].Hand.Cards[len(g.Players[0].Hand.Cards)-1]
+	switch c := mc.(type) {
+	case planetary.MilitaryCard:
+		c.Ability.Act(&g)
+	default:
+		fmt.Println("switch type was not military card")
+	}
 }
